@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AUTO IPD-RI – CLAIM FILING</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0A1929;padding:24px;font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.55)}
+.header{background:linear-gradient(130deg,#071826 0%,#0D2137 100%);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07)}
+.h-text p{color:#5B8FA8;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.9px;margin-bottom:3px}
+.h-text h1{color:#E0F2FE;font-size:21px;font-weight:800;letter-spacing:0.3px}
+.h-right{display:flex;align-items:center;gap:12px}
+.badge{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.28);color:#38BDF8;padding:5px 14px 5px 11px;border-radius:20px;font-size:10.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+.dot{width:7px;height:7px;background:#38BDF8;border-radius:50%;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.scroll{overflow-x:auto;overflow-y:hidden;background:#F1F5F9}
+.scroll::-webkit-scrollbar{height:7px}
+.scroll::-webkit-scrollbar-track{background:#E2E8F0}
+.scroll::-webkit-scrollbar-thumb{background:#94A3B8;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="h-text">
+      <p>Enterprise Process Flow · Healthcare Claims Module · In-Patient Reimbursement</p>
+      <h1>AUTO IPD-RI – CLAIM FILING</h1>
+    </div>
+    <div class="h-right">
+      <span style="color:#1E4060;font-size:11px;font-weight:600">v2.0 · 2025</span>
+      <div class="badge"><div class="dot"></div>IPD-RI Active Flow</div>
+    </div>
+  </div>
+  <div class="scroll">
+    <svg id="g" xmlns="http://www.w3.org/2000/svg" width="3300" height="1200" style="display:block;"></svg>
+  </div>
+</div>
+<script>
+(function(){
+const svg=document.getElementById('g');
+const NS='http://www.w3.org/2000/svg';
+const W=3300,H=1120,LW=150,NW=128,NH=50;
+const el=(tag,a,txt)=>{const e=document.createElementNS(NS,tag);if(a)Object.entries(a).forEach(([k,v])=>e.setAttribute(k,String(v)));if(txt!=null)e.textContent=txt;return e};
+const ap=(p,c)=>{p.appendChild(c);return c};
+const add=(p,tag,a,txt)=>ap(p,el(tag,a,txt));
+
+const defs=add(svg,'defs',{});
+const mkr=(id,fill)=>{const m=add(defs,'marker',{id,markerWidth:'10',markerHeight:'7',refX:'9',refY:'3.5',orient:'auto'});add(m,'polygon',{points:'0 0,10 3.5,0 7',fill})};
+mkr('ap','#7C3AED');mkr('ab','#1D4ED8');mkr('ag','#9CA3AF');mkr('ad','#374151');mkr('ac','#94A3B8');mkr('ay','#059669');mkr('an','#DC2626');
+const ds=(id,b,c)=>{const f=add(defs,'filter',{id,x:'-8%',y:'-25%',width:'116%',height:'160%'});add(f,'feDropShadow',{dx:'0',dy:'2',stdDeviation:String(b),'flood-color':c})};
+ds('ns','3','rgba(0,0,0,0.13)');ds('ss','4','rgba(0,0,0,0.18)');
+
+// Column centres — 13 data columns
+const CX=[0,240,430,615,800,980,1158,1334,1510,1690,1870,2060,2258,2460,2660,2870,3080];
+const PHX=[518,698,1778,2158];
+const ai_y=530, no_y=630;
+const be_y=1020;                  // Backend row (pushed down to make room)
+
+// Lane geometry
+const L1={y:30,h:200},L2={y:230,h:200},L3={y:430,h:H-430};
+
+// ── backgrounds ──
+add(svg,'rect',{x:0,y:0,width:W,height:H,fill:'#F1F5F9'});
+add(svg,'rect',{x:0,y:0,width:W,height:30,fill:'#0D2137'});
+
+// Phase labels
+[['① INITIATION',(LW+PHX[0])/2],['② FORM FILLING',(PHX[0]+PHX[1])/2],
+ ['③ DOCUMENT PROCESSING & AI',(PHX[1]+PHX[2])/2],['④ REVIEW & SUBMIT',(PHX[2]+PHX[3])/2],
+ ['⑤ BACKEND PROCESSING',(PHX[3]+2460)/2],
+ ['⑥ SHORTFALL HANDLING',(2460+W)/2]].forEach(([t,x])=>
+  add(svg,'text',{x,y:15,'text-anchor':'middle','dominant-baseline':'middle',
+    fill:'#5B8FA8','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9.5','font-weight':'600','letter-spacing':'0.75'},t));
+
+// Lane backgrounds & labels
+[[L1,'#FAF5FF','#5B21B6',['Customer','Touchpoints']],
+ [L2,'#EFF6FF','#1E3A8A',['Employee','Platform']],
+ [L3,'#F0F9FF','#0F2D4A',['Internal','Systems']],
+].forEach(([lane,bg,col,lbl])=>{
+  add(svg,'rect',{x:0,y:lane.y,width:W,height:lane.h,fill:bg});
+  add(svg,'line',{x1:0,y1:lane.y,x2:W,y2:lane.y,stroke:'#CBD5E1','stroke-width':'1'});
+  add(svg,'rect',{x:0,y:lane.y,width:LW,height:lane.h,fill:col});
+  add(svg,'rect',{x:0,y:lane.y+1,width:4,height:lane.h-2,rx:'2',fill:'rgba(255,255,255,0.32)'});
+  const my=lane.y+lane.h/2,lh=19,tot=lbl.length*lh;
+  lbl.forEach((ln,i)=>add(svg,'text',{x:LW/2,y:my-tot/2+lh/2+i*lh,'text-anchor':'middle','dominant-baseline':'middle',
+    fill:'white','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'11.5','font-weight':'700','letter-spacing':'0.3'},ln));
+});
+
+add(svg,'line',{x1:0,y1:H,x2:W,y2:H,stroke:'#CBD5E1','stroke-width':'1'});
+add(svg,'line',{x1:LW,y1:0,x2:LW,y2:H,stroke:'#9CA3AF','stroke-width':'2'});
+[...PHX, 2460].forEach(x=>add(svg,'line',{x1:x,y1:30,x2:x,y2:H,stroke:'#CBD5E1','stroke-width':'1','stroke-dasharray':'5,4',opacity:'0.6'}));
+
+// Sub-divider AI/Backend
+const sdY=670;
+add(svg,'line',{x1:LW,y1:sdY,x2:W,y2:sdY,stroke:'#CBD5E1','stroke-width':'1','stroke-dasharray':'5,4',opacity:'0.65'});
+add(svg,'text',{x:LW+6,y:657,'dominant-baseline':'middle',fill:'#94A3B8','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'7','font-weight':'700','letter-spacing':'1.2'},'AI ENGINE');
+add(svg,'text',{x:LW+6,y:682,'dominant-baseline':'middle',fill:'#94A3B8','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'7','font-weight':'700','letter-spacing':'1.2'},'BACKEND / CLAIM SYSTEM');
+
+// ── Style helpers ──
+const LC={
+  customer:{fill:'#EDE9FE',stroke:'#7C3AED',text:'#2E1065'},
+  portal:  {fill:'#DBEAFE',stroke:'#1D4ED8',text:'#1E3A8A'},
+  ai:      {fill:'#E0F2FE',stroke:'#0369A1',text:'#0C2D48'},
+  backend: {fill:'#D1D5DB',stroke:'#1F2937',text:'#111827'},
+};
+const AC={customer:'#7C3AED',portal:'#1D4ED8',ai:'#9CA3AF',backend:'#4B5563',cross:'#94A3B8',yes:'#059669',no:'#DC2626'};
+const MK={customer:'ap',portal:'ab',ai:'ag',backend:'ad',cross:'ac',yes:'ay',no:'an'};
+
+function drawBox(cx,cy,lines,lid,w=NW,h=NH){
+  const c=LC[lid],g=el('g',{filter:'url(#ns)'});
+  ap(g,el('rect',{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:'7',fill:c.fill,stroke:c.stroke,'stroke-width':'2'}));
+  ap(g,el('rect',{x:cx-w/2+1,y:cy-h/2+3,width:3,height:h-6,rx:'1.5',fill:c.stroke,opacity:'0.8'}));
+  const lh=13,tot=lines.length*lh;
+  lines.forEach((line,i)=>ap(g,el('text',{x:cx,y:cy-tot/2+lh*(i+0.5),'text-anchor':'middle','dominant-baseline':'middle',
+    fill:c.text,'font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'10','font-weight':'600'},line)));
+  ap(svg,g);
+}
+
+function drawDiamond(cx,cy,lines){
+  const DW=114,DH=66,g=el('g',{filter:'url(#ns)'});
+  ap(g,el('polygon',{points:`${cx},${cy-DH/2} ${cx+DW/2},${cy} ${cx},${cy+DH/2} ${cx-DW/2},${cy}`,fill:'#FFFBEB',stroke:'#D97706','stroke-width':'2'}));
+  const lh=12,tot=lines.length*lh;
+  lines.forEach((line,i)=>ap(g,el('text',{x:cx,y:cy-tot/2+lh*(i+0.5),'text-anchor':'middle','dominant-baseline':'middle',fill:'#92400E','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9','font-weight':'700'},line)));
+  ap(svg,g);
+  return {DW,DH};
+}
+
+// Small Vings DB cylinder
+function drawVingsDB(cx,cy){
+  const rx=34,ry=10,bh=32;
+  const g=el('g',{filter:'url(#ns)'});
+  // cylinder body
+  ap(g,el('rect',{x:cx-rx,y:cy,width:rx*2,height:bh,fill:'#F8FAFC',stroke:'#475569','stroke-width':'1.5'}));
+  // bottom ellipse
+  ap(g,el('ellipse',{cx,cy:cy+bh,rx,ry,fill:'#E2E8F0',stroke:'#475569','stroke-width':'1.5'}));
+  // side lines cover (clean edges)
+  ap(g,el('line',{x1:cx-rx,y1:cy,x2:cx-rx,y2:cy+bh,stroke:'#475569','stroke-width':'1.5'}));
+  ap(g,el('line',{x1:cx+rx,y1:cy,x2:cx+rx,y2:cy+bh,stroke:'#475569','stroke-width':'1.5'}));
+  // top ellipse (filled white to appear on top)
+  ap(g,el('ellipse',{cx,cy,rx,ry,fill:'#E2E8F0',stroke:'#475569','stroke-width':'1.5'}));
+  // label inside body
+  ap(g,el('text',{x:cx,y:cy+bh/2+3,'text-anchor':'middle','dominant-baseline':'middle',
+    fill:'#1E293B','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9','font-weight':'700','letter-spacing':'0.2'},'Vings DB'));
+  ap(svg,g);
+}
+
+function aLine(x1,y1,x2,y2,lid,dash=false,lbl=''){
+  const col=AC[lid],mk=MK[lid];
+  add(svg,'line',{x1,y1,x2,y2,stroke:col,'stroke-width':dash?'1.5':'2','stroke-dasharray':dash?'7,4':'none','marker-end':`url(#${mk})`});
+  if(lbl){const lx=(x1+x2)/2,ly=(y1+y2)/2-9;
+    add(svg,'rect',{x:lx-28,y:ly-6,width:56,height:13,rx:'3',fill:'white',opacity:'0.92'});
+    add(svg,'text',{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'middle',fill:col,'font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'8','font-weight':'700'},lbl);}
+}
+function aPath(d,lid,dash=false,lbl,lx,ly){
+  const col=AC[lid],mk=MK[lid];
+  add(svg,'path',{d,stroke:col,'stroke-width':dash?'1.5':'2',fill:'none','stroke-dasharray':dash?'7,4':'none','marker-end':`url(#${mk})`});
+  if(lbl&&lx!=null){add(svg,'rect',{x:lx-28,y:ly-6,width:56,height:13,rx:'3',fill:'white',opacity:'0.92'});
+    add(svg,'text',{x:lx,y:ly,'text-anchor':'middle','dominant-baseline':'middle',fill:col,'font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'8','font-weight':'700'},lbl);}
+}
+
+
+
+// ── Problem / Initiative stack ──
+
+function drawPairStack(cxi, pairs, targetNodeY){
+  const GAP=12;
+  const pairH = PH*2+GAP;
+  const interGap = 18;
+  const totalH = pairs.length*pairH + (pairs.length-1)*interGap + 16;
+  const firstPY = 695;  // top of first problem box centre
+  const cardTop = firstPY - PH/2 - 8;
+  const cardBot = cardTop + totalH;
+
+  // Group card
+  add(svg,'rect',{x:cxi-PW/2-8,y:cardTop,width:PW+16,height:totalH,rx:'8',
+    fill:'#FFFFFF',stroke:'#CBD5E1','stroke-width':'1.5',opacity:'0.9'});
+
+  pairs.forEach(([pLines,iLines],idx)=>{
+    const py = firstPY + idx*(pairH+interGap);
+    const iy = py + PH + GAP;
+
+    // Problem (blue)
+    const pg=el('g',{filter:'url(#ns)'});
+    ap(pg,el('rect',{x:cxi-PW/2,y:py-PH/2,width:PW,height:PH,rx:'7',
+      fill:'#4361EE',stroke:'#4361EE','stroke-width':'2'}));
+    const plh=11,ptot=pLines.length*plh;
+    pLines.forEach((ln,i)=>ap(pg,el('text',{x:cxi,y:py-ptot/2+plh*(i+0.5),
+      'text-anchor':'middle','dominant-baseline':'middle',
+      fill:'#FFFFFF','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9','font-weight':'700'},ln)));
+    ap(svg,pg);
+
+    // Initiative (yellow)
+    const ig=el('g',{filter:'url(#ns)'});
+    ap(ig,el('rect',{x:cxi-PW/2,y:iy-PH/2,width:PW,height:PH,rx:'7',
+      fill:'#FFD43B',stroke:'#D97706','stroke-width':'2'}));
+    const ilh=11,itot=iLines.length*ilh;
+    iLines.forEach((ln,i)=>ap(ig,el('text',{x:cxi,y:iy-itot/2+ilh*(i+0.5),
+      'text-anchor':'middle','dominant-baseline':'middle',
+      fill:'#1a1a1a','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9','font-weight':'700'},ln)));
+    ap(svg,ig);
+  });
+
+  // Dashed connector: card top → bottom of target node
+  add(svg,'line',{x1:cxi,y1:cardTop,x2:cxi,y2:targetNodeY,
+    stroke:'#94A3B8','stroke-width':'1.2','stroke-dasharray':'4,3',
+    'marker-end':'url(#ac)',opacity:'0.8'});
+}
+
+
+
+
+// ── Problem / Initiative grid ──
+const PH=50, PW=155;
+
+function drawPairGrid(anchorX, pairs, connectorTargetY){
+  // 3 cols for 6+ pairs, 1 col for single pair
+  const cols = pairs.length <= 1 ? 1 : 3;
+  const colGap=18, rowGap=14;
+  const pairH = PH*2 + rowGap;
+  const rows  = Math.ceil(pairs.length / cols);
+  const totalW = cols*PW + (cols-1)*colGap;
+  const totalH = rows*pairH + (rows-1)*rowGap + 16;
+  const startX = anchorX - totalW/2;
+  const startY = 695;
+  const cardTop = startY - 8;
+  const targetY = (connectorTargetY !== undefined) ? connectorTargetY : (ai_y + NH/2 + 3);
+
+  // white group card
+  add(svg,'rect',{x:startX-8, y:cardTop, width:totalW+16, height:totalH,
+    rx:'8', fill:'#FFFFFF', stroke:'#CBD5E1', 'stroke-width':'1.5', opacity:'0.9'});
+
+  pairs.forEach(([pLines, iLines], idx)=>{
+    const col = idx % cols;
+    const row = Math.floor(idx / cols);
+    const cx2 = startX + col*(PW+colGap) + PW/2;
+    const py  = startY + row*(pairH+rowGap) + PH/2;
+    const iy  = py + PH + rowGap;
+
+    // Problem — blue
+    const pg = el('g',{filter:'url(#ns)'});
+    ap(pg, el('rect',{x:cx2-PW/2, y:py-PH/2, width:PW, height:PH,
+      rx:'7', fill:'#4361EE', stroke:'#4361EE', 'stroke-width':'2'}));
+    const plh=11, ptot=pLines.length*plh;
+    pLines.forEach((ln,i)=>ap(pg, el('text',{x:cx2,
+      y:py - ptot/2 + plh*(i+0.5),
+      'text-anchor':'middle','dominant-baseline':'middle',
+      fill:'#FFFFFF','font-family':"'Plus Jakarta Sans',sans-serif",
+      'font-size':'9','font-weight':'700'},ln)));
+    ap(svg,pg);
+
+    // Initiative — yellow
+    const ig = el('g',{filter:'url(#ns)'});
+    ap(ig, el('rect',{x:cx2-PW/2, y:iy-PH/2, width:PW, height:PH,
+      rx:'7', fill:'#FFD43B', stroke:'#D97706', 'stroke-width':'2'}));
+    const ilh=11, itot=iLines.length*ilh;
+    iLines.forEach((ln,i)=>ap(ig, el('text',{x:cx2,
+      y:iy - itot/2 + ilh*(i+0.5),
+      'text-anchor':'middle','dominant-baseline':'middle',
+      fill:'#1a1a1a','font-family':"'Plus Jakarta Sans',sans-serif",
+      'font-size':'9','font-weight':'700'},ln)));
+    ap(svg,ig);
+  });
+
+  // Return card bounds for external connector drawing
+  return {cardTop, cardBot:cardTop+totalH, anchorX, targetY};
+}
+
+
+function drawSticky(cx,cy,lines,w=134){
+  const lh=15,h=14+lines.length*lh,g=el('g',{filter:'url(#ss)'});
+  ap(g,el('rect',{x:cx-w/2+2,y:cy-h/2+2,width:w,height:h,rx:'3',fill:'rgba(0,0,0,0.09)'}));
+  ap(g,el('rect',{x:cx-w/2,y:cy-h/2,width:w,height:h,rx:'3',fill:'#FEF08A',stroke:'#FCD34D','stroke-width':'1.5'}));
+  ap(g,el('rect',{x:cx-w/2,y:cy-h/2,width:w,height:11,rx:'3',fill:'#FDE047'}));
+  ap(g,el('rect',{x:cx-w/2,y:cy-h/2+7,width:w,height:4,fill:'#FDE047'}));
+  ap(g,el('circle',{cx,cy:cy-h/2+5.5,r:'3',fill:'#CA8A04'}));
+  lines.forEach((line,i)=>ap(g,el('text',{x:cx,y:cy-h/2+17+i*lh,'text-anchor':'middle','dominant-baseline':'middle',
+    fill:'#713F12','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9.5','font-weight':'600'},line)));
+  ap(svg,g);
+}
+
+const cy1=130,cy2=330;
+
+// ═══ ARROWS ═══
+
+// Customer
+
+// Portal
+aLine(CX[1]+64,cy2,CX[2]-64,cy2,'portal');
+aLine(CX[2]+64,cy2,CX[3]-64,cy2,'portal');
+aLine(CX[3]+64,cy2,CX[4]-64,cy2,'portal');
+aLine(CX[4]+64,cy2,CX[5]-64,cy2,'portal');
+aLine(CX[5]+64,cy2,CX[6]-64,cy2,'portal');
+aPath(`M ${CX[6]+64},${cy2} L ${CX[8]-65},${cy2}`,'portal',true,'AI processing...',(CX[6]+64+CX[8]-65)/2,318);
+aLine(CX[8]+65,cy2,CX[9]-64,cy2,'portal',true,'Results ready');
+aLine(CX[9]+64,cy2,CX[10]-64,cy2,'portal');
+aPath(`M ${CX[10]+64},${cy2} L ${CX[11]-64},${cy2}`,'portal',true,'await submit',(CX[10]+64+CX[11]-64)/2,318);
+aLine(CX[11]+64,cy2,CX[12]-64,cy2,'portal');
+
+// AI
+aLine(CX[6]+64,ai_y,CX[8]-64,ai_y,'ai');
+
+// Backend
+aLine(CX[10]+64,be_y,CX[11]-64,be_y,'backend');
+aLine(CX[11]+64,be_y,CX[12]-64,be_y,'backend');
+aLine(CX[12]+64,be_y,CX[13]-64,be_y,'backend');
+
+// Cross-lane
+aLine(CX[1],cy1+25,CX[1],cy2-25,'cross',true);
+  aLine(CX[6],cy2+25,CX[6],ai_y-25,'cross',true);
+aLine(CX[10],ai_y-33,CX[10],cy2+31,'cross',true);
+aLine(CX[10]+8,ai_y+33,CX[10]+8,be_y-25,'cross',true);
+aLine(CX[13],be_y+31,CX[13],cy2+25,'cross',true);
+
+
+// ═══ NODES ═══
+
+// Customer
+drawBox(CX[1],cy1,['Login to','Employee Portal'],'customer');
+
+// Portal
+drawBox(CX[1],cy2,['Open','Claim Form'],'portal');
+drawBox(CX[2],cy2,['Show Claim Details','+ Claim Type Selector'],'portal',140,50);
+drawBox(CX[3],cy2,['Hospital Search +','Admission/Discharge Dates'],'portal',148,50);
+drawBox(CX[4],cy2,['Bill Breakup Section','(Multiple Entries)'],'portal');
+drawBox(CX[5],cy2,['Show Upload Docs +','Dynamic Doc Checklist'],'portal');
+drawBox(CX[6],cy2,['Send Docs for','AI Processing'],'portal');
+drawBox(CX[8],cy2,['Bank Details Section','+ Persist Prev. Details'],'portal');
+drawBox(CX[9],cy2,['Display','Detected Docs'],'portal');
+drawBox(CX[10],cy2,['Review','Claim Form'],'portal');
+drawBox(CX[11],cy2,['Click Submit CTA'],'portal',NW,44);
+drawBox(CX[12],cy2,['Submission','Success'],'portal');
+
+// AI Engine
+drawBox(CX[6],ai_y,['AI Document','Processing'],'ai');
+
+drawBox(CX[8],ai_y,['AI Document Categorization','+ OCR Extract Bank Details'],'ai',170,50);
+drawBox(CX[10],ai_y,['Generate IPD','Claim Payload','(JSON Output)'],'ai',130,62);
+
+// Backend (4 nodes, last one cleaned up)
+drawBox(CX[10],be_y,['Receive Claim','Payload'],'backend');
+drawBox(CX[11],be_y,['Create IPD Record','in Vings DB'],'backend');
+drawBox(CX[12],be_y,['Store Docs (DMS) +','Map to Claim +','Save Metadata + Bank'],'backend',148,62);
+drawBox(CX[13],be_y,['Policy Validation + Update Status','+ Claim History + Notify','(SMS / Email / WhatsApp)'],'backend',200,62);
+
+// Vings DB cylinder below Create IPD Record node
+drawVingsDB(CX[11], be_y+36);
+
+
+// ═══ PROBLEM / INITIATIVE PAIRS ═══
+
+
+
+
+// ═══ AI DOCUMENT PROCESSING — 3-col grid (6 pairs) ═══
+const g6 = drawPairGrid(CX[6], [
+  [['Document quality not validated','during upload — leads to shortfall'],
+   ['Capture Shortfall at Source:','Blur check + document validity','check using AI']],
+  [['Doc requirements vary by ailment','— not dynamically guided'],
+   ['Capture Shortfall at Source:','AI categorization by condition','(e.g. MLC for road accident)']],
+  [['Manual filling of lengthy','claim form is tedious'],
+   ['Smart Form Fill:','AI auto form fill from docs','(patient, ailment, hosp, bank)']],
+  [['Bill breakup manually entered','and time-consuming'],
+   ['Smart Form Fill:','AI auto-fill bill items, number,','amount, date from hospital bill']],
+  [['Bill items not validated','against policy before submission'],
+   ['Instant Claim Adjudication:','Auto adjudication for specific','ailments (cataract, maternity)']],
+  [['Non-covered member docs','uploaded — leads to rejections'],
+   ['Member Coverage Validator:','Patient matching with enrolled','member + age/gender validation']]
+], ai_y+NH/2);
+
+// CX[10] — Review Claim Form (1 pair)
+const g10 = drawPairGrid(CX[10], [
+  [['No visibility to check coverage','at time of claim filing'],
+   ['Smart Coverage Check:','Contextual explanation of coverage,','exclusions & limits']]
+], cy2+NH/2);
+
+// CX[12] — Submission Success (1 pair)
+const g12 = drawPairGrid(CX[12], [
+  [['Users lack visibility into','expected claim settlement TAT'],
+   ['Expected SLA per Stage:','Dynamic status basis corporate','level SLA tracking']]
+], cy2+NH/2);
+
+
+// ═══ STICKY NOTES ═══
+drawSticky(CX[8]+88,260,['🏦 OCR Auto-Fills','Bank Details'],130);
+drawSticky(CX[8]-10,60,['🔄 Reusable Bank Details','Reduces Effort'],140);
+// ═══ SHORTFALL FLOW NODES ═══
+
+// Backend: Agent adjudicates → Marks Shortfall → Notify
+drawBox(CX[14],be_y,['Agent','Adjudication'],'backend');
+drawBox(CX[15],be_y,['Mark as Shortfall','+ Notify User'],'backend');
+
+// Portal: Show shortfall notification → upload docs
+drawBox(CX[14],cy2,['Show Claim','Status'],'portal');
+drawBox(CX[15],cy2,['Shortfall Notification','+ Doc Requirements'],'portal');
+drawBox(CX[16],cy2,['Upload Shortfall','Documents'],'portal');
+
+// Customer: Notified → Uploads docs
+drawBox(CX[15],cy1,['Receives Shortfall','Notification'],'customer');
+drawBox(CX[16],cy1,['Uploads Missing','Documents'],'customer');
+
+// Backend arrows
+aLine(CX[13]+64,be_y, CX[14]-64,be_y,'backend');
+aLine(CX[14]+64,be_y, CX[15]-64,be_y,'backend');
+
+// Portal arrows
+aLine(CX[12]+64,cy2, CX[14]-64,cy2,'portal');
+aLine(CX[14]+64,cy2, CX[15]-64,cy2,'portal');
+aLine(CX[15]+64,cy2, CX[16]-64,cy2,'portal');
+
+// Customer arrows
+aLine(CX[15]+64,cy1, CX[16]-64,cy1,'customer');
+
+// Cross-lane
+aLine(CX[14],be_y-25, CX[14],cy2+25,'cross',true);
+aLine(CX[15],be_y-25, CX[15],cy2+25,'cross',true);
+aLine(CX[15],cy2-25,  CX[15],cy1+25,'cross',true);
+aLine(CX[16],cy2-25,  CX[16],cy1+25,'cross',true);
+
+// Dashed loop: Upload docs feeds back to portal (dotted return arrow)
+aPath(`M ${CX[16]},${cy1+25} L ${CX[16]},${cy2-25}`,'cross',true);
+
+
+// ═══ PAIR GRID CONNECTORS (drawn last, on top) ═══
+function drawGridConnector(g){
+  const {cardTop, cardBot, anchorX, targetY} = g;
+  const fromY = targetY < cardTop ? cardTop : cardBot;
+  add(svg,'line',{x1:anchorX, y1:fromY, x2:anchorX, y2:targetY,
+    stroke:'#475569','stroke-width':'1.5','stroke-dasharray':'5,4',
+    'marker-end':'url(#ac)',opacity:'0.9'});
+}
+drawGridConnector(g6);
+drawGridConnector(g10);
+drawGridConnector(g12);
+
+
+// ═══ LEGEND ═══
+const LX=LW+16,LY=H-46;
+add(svg,'rect',{x:LX,y:LY,width:500,height:38,rx:'7',fill:'rgba(255,255,255,0.88)',stroke:'#E2E8F0','stroke-width':'1'});
+add(svg,'text',{x:LX+10,y:LY+20,'dominant-baseline':'middle',fill:'#374151','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9','font-weight':'800'},'LEGEND:');
+add(svg,'line',{x1:LX+66,y1:LY+19,x2:LX+88,y2:LY+19,stroke:'#475569','stroke-width':'2','marker-end':'url(#ac)'});
+add(svg,'text',{x:LX+93,y:LY+19,'dominant-baseline':'middle',fill:'#6B7280','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9'},'Sync');
+add(svg,'line',{x1:LX+128,y1:LY+19,x2:LX+150,y2:LY+19,stroke:'#94A3B8','stroke-width':'1.5','stroke-dasharray':'5,3','marker-end':'url(#ac)'});
+add(svg,'text',{x:LX+155,y:LY+19,'dominant-baseline':'middle',fill:'#6B7280','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9'},'Async/System');
+add(svg,'polygon',{points:`${LX+226},${LY+13} ${LX+234},${LY+19} ${LX+226},${LY+25} ${LX+218},${LY+19}`,fill:'#FFFBEB',stroke:'#D97706','stroke-width':'1.5'});
+add(svg,'text',{x:LX+239,y:LY+19,'dominant-baseline':'middle',fill:'#6B7280','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9'},'Decision');
+add(svg,'rect',{x:LX+290,y:LY+10,width:14,height:14,rx:'2',fill:'#4361EE',stroke:'none'});
+add(svg,'text',{x:LX+310,y:LY+19,'dominant-baseline':'middle',fill:'#6B7280','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9'},'Problem');
+add(svg,'rect',{x:LX+356,y:LY+10,width:14,height:14,rx:'2',fill:'#FFD43B',stroke:'#D97706','stroke-width':'1'});
+add(svg,'text',{x:LX+376,y:LY+19,'dominant-baseline':'middle',fill:'#6B7280','font-family':"'Plus Jakarta Sans',sans-serif",'font-size':'9'},'Initiative');
+
+})();
+</script>
+</body>
+</html>
